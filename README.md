@@ -57,7 +57,7 @@ By completing the below tasks, a solid foundation is built in working with datab
 
 ---
 
-## 📂 Repository Contents
+##  Repository Contents
 - SQL code files for each task  
 - Screenshots of query outputs  
 - README file describing the project  
