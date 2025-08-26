@@ -1,6 +1,8 @@
+-- Create Database
 CREATE DATABASE LibraryDB;
 USE LibraryDB;
 
+-- Create Books table
 CREATE TABLE Books (
     BOOK_ID INT AUTO_INCREMENT PRIMARY KEY,
     TITLE VARCHAR(100) NOT NULL,
@@ -10,6 +12,7 @@ CREATE TABLE Books (
     AVAILABLE_COPIES INT DEFAULT 0
 );
 
+-- Create Members table
 CREATE TABLE Members (
     MEMBER_ID INT AUTO_INCREMENT PRIMARY KEY,
     NAME VARCHAR(100) NOT NULL,
@@ -19,6 +22,7 @@ CREATE TABLE Members (
     MEMBERSHIP_DATE DATE DEFAULT (CURDATE())
 );
 
+-- Create BorrowingRecords table
 CREATE TABLE BorrowingRecords (
     BORROW_ID INT AUTO_INCREMENT PRIMARY KEY,
     MEMBER_ID INT,
@@ -29,6 +33,7 @@ CREATE TABLE BorrowingRecords (
     FOREIGN KEY (BOOK_ID) REFERENCES Books(BOOK_ID)
 );
 
+-- Insert sample data into Books
 INSERT INTO Books (TITLE, AUTHOR, GENRE, YEAR_PUBLISHED, AVAILABLE_COPIES)
 VALUES
 ('The Alchemist', 'Paulo Coelho', 'Fiction', 1988, 5),
@@ -37,6 +42,7 @@ VALUES
 ('The Pragmatic Programmer', 'Andrew Hunt', 'Programming', 1999, 4),
 ('The Hobbit', 'J.R.R. Tolkien', 'Fantasy', 1937, 2);
 
+-- Insert sample data into Members
 INSERT INTO Members (NAME, EMAIL, PHONE_NO, ADDRESS)
 VALUES
 ('Monish R', 'monish@example.com', '9876543210', '123 Street, City'),
@@ -44,6 +50,7 @@ VALUES
 ('Bob Johnson', 'bob@example.com', '9988776655', '789 Road, City'),
 ('Carol Davis', 'carol@example.com', '9012345678', '321 Lane, City');
 
+-- Insert sample data into BorrowingRecords
 INSERT INTO BorrowingRecords (MEMBER_ID, BOOK_ID, BORROW_DATE, RETURN_DATE)
 VALUES
 (1, 1, '2025-07-01', '2025-07-10'),
@@ -53,22 +60,28 @@ VALUES
 (3, 5, '2025-06-20', '2025-07-05'),
 (4, 1, '2025-08-10', NULL);
 
+-- Information Retrieval Queries
+
+-- a) List of books currently borrowed by a specific member (example: MEMBER_ID = 1)
 SELECT b.TITLE, b.AUTHOR, br.BORROW_DATE
 FROM BorrowingRecords br
 JOIN Books b ON br.BOOK_ID = b.BOOK_ID
 WHERE br.MEMBER_ID = 1 AND br.RETURN_DATE IS NULL;
 
+-- b) Members who have overdue books (borrowed >30 days ago, not returned)
 SELECT m.NAME, m.EMAIL, b.TITLE, br.BORROW_DATE
 FROM BorrowingRecords br
 JOIN Members m ON br.MEMBER_ID = m.MEMBER_ID
 JOIN Books b ON br.BOOK_ID = b.BOOK_ID
 WHERE br.RETURN_DATE IS NULL
   AND br.BORROW_DATE < CURDATE() - INTERVAL 30 DAY;
-  
-  SELECT GENRE, COUNT(*) AS Total_Books, SUM(AVAILABLE_COPIES) AS Total_Available
+
+-- c) Books by genre with available copies
+SELECT GENRE, COUNT(*) AS Total_Books, SUM(AVAILABLE_COPIES) AS Total_Available
 FROM Books
 GROUP BY GENRE;
 
+-- d) Most borrowed book(s)
 SELECT b.TITLE, b.AUTHOR, COUNT(*) AS Borrow_Count
 FROM BorrowingRecords br
 JOIN Books b ON br.BOOK_ID = b.BOOK_ID
@@ -76,6 +89,7 @@ GROUP BY br.BOOK_ID
 ORDER BY Borrow_Count DESC
 LIMIT 1;
 
+-- e) Members who borrowed from at least 3 different genres
 SELECT m.NAME, COUNT(DISTINCT b.GENRE) AS Genre_Count
 FROM BorrowingRecords br
 JOIN Members m ON br.MEMBER_ID = m.MEMBER_ID
@@ -83,11 +97,15 @@ JOIN Books b ON br.BOOK_ID = b.BOOK_ID
 GROUP BY br.MEMBER_ID
 HAVING Genre_Count >= 3;
 
+-- Reporting & Analytics Queries
+
+-- a) Total books borrowed per month
 SELECT DATE_FORMAT(BORROW_DATE, '%Y-%m') AS Borrow_Month, COUNT(*) AS Total_Borrowed
 FROM BorrowingRecords
 GROUP BY Borrow_Month
 ORDER BY Borrow_Month;
 
+-- b) Top 3 most active members
 SELECT m.NAME, COUNT(*) AS Books_Borrowed
 FROM BorrowingRecords br
 JOIN Members m ON br.MEMBER_ID = m.MEMBER_ID
@@ -95,17 +113,15 @@ GROUP BY br.MEMBER_ID
 ORDER BY Books_Borrowed DESC
 LIMIT 3;
 
+-- c) Authors whose books borrowed at least 10 times
 SELECT b.AUTHOR, COUNT(*) AS Borrow_Count
 FROM BorrowingRecords br
 JOIN Books b ON br.BOOK_ID = b.BOOK_ID
 GROUP BY b.AUTHOR
 HAVING Borrow_Count >= 10;
 
+-- d) Members who never borrowed a book
 SELECT m.NAME, m.EMAIL
 FROM Members m
 LEFT JOIN BorrowingRecords br ON m.MEMBER_ID = br.MEMBER_ID
 WHERE br.MEMBER_ID IS NULL;
-
-SELECT * FROM Books
-SELECT * FROM Members;
-SELECT * FROM BorrowingRecords;
