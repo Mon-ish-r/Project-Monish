@@ -1,20 +1,4 @@
 # Project-Monish
-# SQL Final Project
-
-## Course: SQL  
-### Final Project Problem Statement
-
-This repository contains the final project for the SQL course.  
-The project demonstrates fundamental SQL concepts using PostgreSQL/Redshift, including:  
-- Creating databases and tables  
-- Inserting and manipulating data  
-- Querying and filtering data  
-- Aggregating and analyzing data  
-- Data manipulation and transformation  
-
-By completing the below tasks, a solid foundation is built in working with databases, which is essential for roles in data management, software development, and data analysis.  
-
----
 
 ##  Project Tasks
 
