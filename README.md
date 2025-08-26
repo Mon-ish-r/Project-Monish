@@ -16,7 +16,7 @@ By completing the below tasks, a solid foundation is built in working with datab
 
 ---
 
-## 📌 Project Tasks
+##  Project Tasks
 
 ### Task 1: Library Management System (SQL)
 **Objective:** Design a database to manage book inventories, member details, and borrowing transactions.  
@@ -64,7 +64,7 @@ By completing the below tasks, a solid foundation is built in working with datab
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 1. Clone the repository:  
    ```bash
    git clone https://github.com/your-username/Project-YourName.git
